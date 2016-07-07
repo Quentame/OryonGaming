@@ -14,11 +14,11 @@ ol li {
 	padding: 10px;
 }
 </style>
-<h1>Liste des jeux <a href="./page=game" class="btn btn-primary">Ajouter un jeux</a></h1>
+<h1>Liste des jeux <a href="./?page=game" class="btn btn-primary">Ajouter un jeux</a></h1>
 <?php
 $games = Db::select('game');
 if (empty($games)) {
-	echo '<p>Aucun jeux</p>';
+	echo '<h2>Aucun jeux</h2>';
 } else {
 	echo '<ol>';
 	foreach ($games as $key => $game) {

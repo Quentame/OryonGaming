@@ -18,6 +18,10 @@ define('AUTHOR', 'Quentin POLLET & Clément COMPARATO');
 function getDb() {
 	try {
 		$database_type = 'mysql';
+		$dbhost = 'mysql.hostinger.fr';
+		$dbname = 'u544081784_oryon';
+		$user = 'u544081784_oryon';
+		$pwd = 'OryonGC';
 		$dbhost = 'localhost';
 		$dbname = 'OryonGC';
 		$user = 'root';
