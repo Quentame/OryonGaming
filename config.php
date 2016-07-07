@@ -19,7 +19,7 @@ function getDb() {
 	try {
 		$database_type = 'mysql';
 		$dbhost = 'localhost';
-		$dbname = 'HUB_environement';
+		$dbname = 'OryonGC';
 		$user = 'root';
 		$pwd = 'root';
 		$db = new PDO($database_type.':host='.$dbhost.';dbname='.$dbname.';charset=utf8', $user, $pwd);
@@ -41,11 +41,15 @@ spl_autoload_register(function ($class) {
 		require './model/'.$class.'.php';
 	else if(is_file('../model/'.$class.'.php'))
 		require '../model/'.$class.'.php';
+	else if(is_file('../../model/'.$class.'.php'))
+		require '../../model/'.$class.'.php';
 
 	if(is_file('./view/'.$class.'.php'))
 		require './view/'.$class.'.php';
 	else if(is_file('../view/'.$class.'.php'))
 		require '../view/'.$class.'.php';
+	else if(is_file('../../view/'.$class.'.php'))
+		require '../../view/'.$class.'.php';
 });
 
 function getBrowserLang() {

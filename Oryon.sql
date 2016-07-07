@@ -10,7 +10,7 @@
  Target Server Version : 40100
  File Encoding         : utf-8
 
- Date: 06/27/2016 23:24:11 PM
+ Date: 07/06/2016 22:47:49 PM
 */
 
 SET NAMES utf8;
@@ -28,19 +28,6 @@ CREATE TABLE `comment` (
 ) COMMENT='';
 
 -- ----------------------------
---  Table structure for `comment_like`
--- ----------------------------
-DROP TABLE IF EXISTS `comment_like`;
-CREATE TABLE `comment_like` (
-	`comment_like_id` int NOT NULL,
-	`user_id` int NOT NULL,
-	`comment_id` int NOT NULL,
-	PRIMARY KEY (`comment_like_id`),
-	CONSTRAINT `comment` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`comment_id`),
-	CONSTRAINT `user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) COMMENT='';
-
--- ----------------------------
 --  Table structure for `game`
 -- ----------------------------
 DROP TABLE IF EXISTS `game`;
@@ -52,42 +39,13 @@ CREATE TABLE `game` (
 ) COMMENT='';
 
 -- ----------------------------
---  Table structure for `game_media`
+--  Table structure for `gametype`
 -- ----------------------------
-DROP TABLE IF EXISTS `game_media`;
-CREATE TABLE `game_media` (
-	`game_media_id` int NOT NULL,
-	`game_id` int NOT NULL,
-	`media_id` int NOT NULL,
-	PRIMARY KEY (`game_media_id`),
-	CONSTRAINT `media` FOREIGN KEY (`media_id`) REFERENCES `media` (`media_id`),
-	CONSTRAINT `game` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`)
-) COMMENT='';
-
--- ----------------------------
---  Table structure for `game_platform`
--- ----------------------------
-DROP TABLE IF EXISTS `game_platform`;
-CREATE TABLE `game_platform` (
-	`game_platform_id` int NOT NULL,
-	`game_id` int NOT NULL,
-	`platform_id` int NOT NULL,
-	PRIMARY KEY (`game_platform_id`),
-	CONSTRAINT `platforms` FOREIGN KEY (`platform_id`) REFERENCES `platform` (`platform_id`),
-	CONSTRAINT `game` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`)
-) COMMENT='';
-
--- ----------------------------
---  Table structure for `game_test`
--- ----------------------------
-DROP TABLE IF EXISTS `game_test`;
-CREATE TABLE `game_test` (
-	`game_test_id` int NOT NULL,
-	`game_id` int NOT NULL,
-	`test_id` int NOT NULL,
-	PRIMARY KEY (`game_test_id`),
-	CONSTRAINT `game` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`),
-	CONSTRAINT `test` FOREIGN KEY (`test_id`) REFERENCES `test` (`test_id`)
+DROP TABLE IF EXISTS `gametype`;
+CREATE TABLE `gametype` (
+	`gametype_id` int NOT NULL,
+	`gametype_label` longtext NOT NULL,
+	PRIMARY KEY (`gametype_id`)
 ) COMMENT='';
 
 -- ----------------------------
@@ -136,34 +94,6 @@ CREATE TABLE `post` (
 ) COMMENT='';
 
 -- ----------------------------
---  Table structure for `post_comment`
--- ----------------------------
-DROP TABLE IF EXISTS `post_comment`;
-CREATE TABLE `post_comment` (
-	`post_comment_id` int NOT NULL,
-	`post_id` int NOT NULL,
-	`comment_id` int NOT NULL,
-	`user_id` int NOT NULL,
-	PRIMARY KEY (`post_comment_id`),
-	CONSTRAINT `comment` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`comment_id`),
-	CONSTRAINT `post` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`),
-	CONSTRAINT `user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) COMMENT='';
-
--- ----------------------------
---  Table structure for `post_like`
--- ----------------------------
-DROP TABLE IF EXISTS `post_like`;
-CREATE TABLE `post_like` (
-	`post_like_id` int NOT NULL,
-	`user_id` int NOT NULL,
-	`post_id` int NOT NULL,
-	PRIMARY KEY (`post_like_id`),
-	CONSTRAINT `user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-	CONSTRAINT `post` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`)
-) COMMENT='';
-
--- ----------------------------
 --  Table structure for `setting`
 -- ----------------------------
 DROP TABLE IF EXISTS `setting`;
@@ -194,21 +124,6 @@ CREATE TABLE `team` (
 	`team_is_guild` int NOT NULL,
 	`team_creation_date` longblob NOT NULL,
 	PRIMARY KEY (`team_id`)
-) COMMENT='';
-
--- ----------------------------
---  Table structure for `team_user`
--- ----------------------------
-DROP TABLE IF EXISTS `team_user`;
-CREATE TABLE `team_user` (
-	`team_user_id` int NOT NULL,
-	`user_id` int NOT NULL,
-	`team_id` int NOT NULL,
-	`lineup_id` int,
-	PRIMARY KEY (`team_user_id`),
-	CONSTRAINT `team` FOREIGN KEY (`team_id`) REFERENCES `team` (`team_id`),
-	CONSTRAINT `user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-	CONSTRAINT `lineup` FOREIGN KEY (`lineup_id`) REFERENCES `lineup` (`lineup_id`)
 ) COMMENT='';
 
 -- ----------------------------
@@ -248,6 +163,117 @@ CREATE TABLE `user` (
 	PRIMARY KEY (`user_id`)
 ) COMMENT='';
 
+-- -----------------------------------------
+-- -----------------------------------------
+
+-- ----------------------------
+--  Table structure for `comment_like`
+-- ----------------------------
+DROP TABLE IF EXISTS `comment_like`;
+CREATE TABLE `comment_like` (
+	`comment_like_id` int NOT NULL,
+	`user_id` int NOT NULL,
+	`comment_id` int NOT NULL,
+	PRIMARY KEY (`comment_like_id`),
+	CONSTRAINT `comments` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`comment_id`),
+	CONSTRAINT `user_comment` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) COMMENT='';
+
+-- ----------------------------
+--  Table structure for `game_media`
+-- ----------------------------
+DROP TABLE IF EXISTS `game_media`;
+CREATE TABLE `game_media` (
+	`game_media_id` int NOT NULL,
+	`game_id` int NOT NULL,
+	`media_id` int NOT NULL,
+	PRIMARY KEY (`game_media_id`),
+	CONSTRAINT `medias_for_game` FOREIGN KEY (`media_id`) REFERENCES `media` (`media_id`),
+	CONSTRAINT `game_media` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`)
+) COMMENT='';
+
+-- ----------------------------
+--  Table structure for `game_platform`
+-- ----------------------------
+DROP TABLE IF EXISTS `game_platform`;
+CREATE TABLE `game_platform` (
+	`game_platform_id` int NOT NULL,
+	`game_id` int NOT NULL,
+	`platform_id` int NOT NULL,
+	PRIMARY KEY (`game_platform_id`),
+	CONSTRAINT `platforms` FOREIGN KEY (`platform_id`) REFERENCES `platform` (`platform_id`),
+	CONSTRAINT `game_platform` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`)
+) COMMENT='';
+
+-- ----------------------------
+--  Table structure for `game_test`
+-- ----------------------------
+DROP TABLE IF EXISTS `game_test`;
+CREATE TABLE `game_test` (
+	`game_test_id` int NOT NULL,
+	`game_id` int NOT NULL,
+	`test_id` int NOT NULL,
+	PRIMARY KEY (`game_test_id`),
+	CONSTRAINT `game_test` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`),
+	CONSTRAINT `tests` FOREIGN KEY (`test_id`) REFERENCES `test` (`test_id`)
+) COMMENT='';
+
+-- ----------------------------
+--  Table structure for `game_type`
+-- ----------------------------
+DROP TABLE IF EXISTS `game_type`;
+CREATE TABLE `game_type` (
+	`game_type_id` int NOT NULL,
+	`game_id` int NOT NULL,
+	`type_id` int NOT NULL,
+	PRIMARY KEY (`game_type_id`),
+	CONSTRAINT `types` FOREIGN KEY (`type_id`) REFERENCES `gametype` (`gametype_id`),
+	CONSTRAINT `game_type` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`)
+) COMMENT='';
+
+-- ----------------------------
+--  Table structure for `team_user`
+-- ----------------------------
+DROP TABLE IF EXISTS `team_user`;
+CREATE TABLE `team_user` (
+	`team_user_id` int NOT NULL,
+	`user_id` int NOT NULL,
+	`team_id` int NOT NULL,
+	`lineup_id` int,
+	PRIMARY KEY (`team_user_id`),
+	CONSTRAINT `teams` FOREIGN KEY (`team_id`) REFERENCES `team` (`team_id`),
+	CONSTRAINT `user_team` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+	CONSTRAINT `lineups` FOREIGN KEY (`lineup_id`) REFERENCES `lineup` (`lineup_id`)
+) COMMENT='';
+
+-- ----------------------------
+--  Table structure for `post_comment`
+-- ----------------------------
+DROP TABLE IF EXISTS `post_comment`;
+CREATE TABLE `post_comment` (
+	`post_comment_id` int NOT NULL,
+	`post_id` int NOT NULL,
+	`comment_id` int NOT NULL,
+	`user_id` int NOT NULL,
+	PRIMARY KEY (`post_comment_id`),
+	CONSTRAINT `comments` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`comment_id`),
+	CONSTRAINT `posts` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`),
+	CONSTRAINT `user_comment` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) COMMENT='';
+
+-- ----------------------------
+--  Table structure for `post_like`
+-- ----------------------------
+DROP TABLE IF EXISTS `post_like`;
+CREATE TABLE `post_like` (
+	`post_like_id` int NOT NULL,
+	`user_id` int NOT NULL,
+	`post_id` int NOT NULL,
+	PRIMARY KEY (`post_like_id`),
+	CONSTRAINT `user_like` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+	CONSTRAINT `posts` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`)
+) COMMENT='';
+
 -- ----------------------------
 --  Table structure for `user_media`
 -- ----------------------------
@@ -257,8 +283,8 @@ CREATE TABLE `user_media` (
 	`user_id` int NOT NULL,
 	`media_id` int NOT NULL,
 	PRIMARY KEY (`user_media_id`),
-	CONSTRAINT `media` FOREIGN KEY (`media_id`) REFERENCES `media` (`media_id`),
-	CONSTRAINT `user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+	CONSTRAINT `medias_for_user` FOREIGN KEY (`media_id`) REFERENCES `media` (`media_id`),
+	CONSTRAINT `user_media` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) COMMENT='';
 
 -- ----------------------------
@@ -270,8 +296,8 @@ CREATE TABLE `user_post` (
 	`user_id` int NOT NULL,
 	`post_id` int NOT NULL,
 	PRIMARY KEY (`user_post_id`),
-	CONSTRAINT `user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-	CONSTRAINT `post` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`)
+	CONSTRAINT `user_post` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+	CONSTRAINT `post_by_user` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`)
 ) COMMENT='';
 
 -- ----------------------------
@@ -283,8 +309,8 @@ CREATE TABLE `user_test` (
 	`user_id` int NOT NULL,
 	`test_id` int NOT NULL,
 	PRIMARY KEY (`user_test_id`),
-	CONSTRAINT `test` FOREIGN KEY (`test_id`) REFERENCES `test` (`test_id`),
-	CONSTRAINT `user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+	CONSTRAINT `test_by_user` FOREIGN KEY (`test_id`) REFERENCES `test` (`test_id`),
+	CONSTRAINT `user_test` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) COMMENT='';
 
 SET FOREIGN_KEY_CHECKS = 1;
